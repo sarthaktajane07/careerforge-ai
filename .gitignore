@@ -1,0 +1,9 @@
+node_modules/
+.DS_Store
+.env
+dist/
+build/
+*.db
+*.sqlite
+*.sqlite3
+uploads/
