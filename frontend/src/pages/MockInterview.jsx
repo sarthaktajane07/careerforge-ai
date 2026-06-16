@@ -792,11 +792,65 @@ export const MockInterview = () => {
                       </span>
                     </div>
                     <div style={styles.auditBody}>
-                      <p style={{ fontWeight: '600', marginBottom: '0.5rem' }}>"{resp.questionText}"</p>
-                      <p style={{ color: 'var(--color-text-secondary)', fontStyle: 'italic', fontSize: '0.85rem', marginBottom: '0.75rem' }}>
-                        Transcribed answer: "{resp.userAnswer || <em style={{color: 'var(--color-error)'}}>No audio/text answer captured</em>}"
-                      </p>
-                      <p style={{ fontSize: '0.85rem', color: '#a5b4fc', borderTop: '1px solid var(--border-glass)', paddingTop: '0.5rem', margin: 0 }}>
+                      <p style={{ fontWeight: '600', marginBottom: '1rem', fontSize: '0.95rem' }}>"{resp.questionText}"</p>
+
+                      {/* ── Transcribed Answer Block ── */}
+                      <div style={{
+                        background: 'rgba(6, 182, 212, 0.05)',
+                        border: '1px solid rgba(6, 182, 212, 0.25)',
+                        borderLeft: '3px solid var(--accent-cyan)',
+                        borderRadius: '8px',
+                        padding: '0.85rem 1rem',
+                        marginBottom: '1rem',
+                      }}>
+                        <div style={{
+                          display: 'flex',
+                          alignItems: 'center',
+                          gap: '0.4rem',
+                          marginBottom: '0.4rem',
+                          fontSize: '0.65rem',
+                          fontWeight: '700',
+                          textTransform: 'uppercase',
+                          letterSpacing: '0.07em',
+                          color: 'var(--accent-cyan)'
+                        }}>
+                          🎙 Your Transcribed Answer
+                        </div>
+                        {resp.userAnswer && resp.userAnswer.trim() ? (
+                          <p style={{
+                            margin: 0,
+                            fontSize: '0.875rem',
+                            lineHeight: '1.6',
+                            color: 'var(--color-text-primary)',
+                            fontStyle: 'normal',
+                          }}>
+                            {resp.userAnswer}
+                          </p>
+                        ) : (
+                          <p style={{
+                            margin: 0,
+                            fontSize: '0.8rem',
+                            fontStyle: 'italic',
+                            color: 'var(--color-error)',
+                            display: 'flex',
+                            alignItems: 'center',
+                            gap: '0.35rem',
+                          }}>
+                            <span style={{
+                              background: 'rgba(239,68,68,0.12)',
+                              border: '1px solid rgba(239,68,68,0.25)',
+                              borderRadius: '4px',
+                              padding: '0.15rem 0.5rem',
+                              fontSize: '0.7rem',
+                              fontWeight: '700',
+                              fontStyle: 'normal',
+                            }}>NO SPEECH CAPTURED</span>
+                            No voice answer was recorded for this question.
+                          </p>
+                        )}
+                      </div>
+
+                      <p style={{ fontSize: '0.85rem', color: '#a5b4fc', borderTop: '1px solid var(--border-glass)', paddingTop: '0.75rem', margin: 0 }}>
                         <strong>AI Review:</strong> {resp.feedback}
                       </p>
                     </div>

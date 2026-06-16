@@ -129,49 +129,489 @@ export const analyzeResume = (fullName, skillsString, educationString, resumeTex
 // 3. Mock Interview Question Generator
 export const generateInterviewQuestions = (jobRole) => {
   const role = jobRole ? jobRole.trim() : 'Software Engineer';
-  
+
   const hrQuestions = [
-    { question: 'Tell me about yourself and what motivates your interest in this role.', type: 'hr' },
-    { question: 'Describe a challenging project you worked on and how you resolved a major hurdle.', type: 'hr' },
-    { question: `Why do you feel you are the ideal fit for a ${role} position, and what are your long-term goals?`, type: 'hr' }
+    { question: `Tell me about yourself and what draws you to a career as a ${role}.`, type: 'hr' },
+    {
+      question: 'Describe a challenging project you worked on and how you resolved a major technical or team hurdle.',
+      type: 'hr'
+    },
+    {
+      question: `Why do you feel you are the ideal candidate for a ${role} position, and where do you see yourself in 3–5 years?`,
+      type: 'hr'
+    }
   ];
 
   let technicalQuestions = [];
-
   const roleLower = role.toLowerCase();
-  if (roleLower.includes('frontend') || roleLower.includes('react') || roleLower.includes('web')) {
+
+  // ─── Frontend / Web / React / Angular / Vue ───────────────────────────────
+  if (
+    roleLower.includes('frontend') ||
+    roleLower.includes('front-end') ||
+    roleLower.includes('react') ||
+    roleLower.includes('angular') ||
+    roleLower.includes('vue') ||
+    roleLower.includes('web developer')
+  ) {
     technicalQuestions = [
-      { question: 'What is the Virtual DOM in React, and how does React optimize rendering performance?', type: 'technical' },
-      { question: 'Explain CSS specificity and how you approach building responsive designs.', type: 'technical' },
-      { question: 'How do you handle state management in a large-scale React application?', type: 'technical' }
+      {
+        question:
+          'What is the Virtual DOM in React and how does React's reconciliation algorithm optimize re-renders?',
+        type: 'technical'
+      },
+      {
+        question:
+          'Explain CSS specificity, the box model, and how you approach building pixel-perfect responsive designs across breakpoints.',
+        type: 'technical'
+      },
+      {
+        question:
+          'How do you manage global state in a large-scale React application? Compare Context API, Redux Toolkit, and Zustand.',
+        type: 'technical'
+      },
+      {
+        question:
+          'What are Web Core Vitals (LCP, CLS, FID) and what techniques do you use to optimize them in production?',
+        type: 'technical'
+      },
+      {
+        question:
+          'Explain the difference between server-side rendering (SSR), static site generation (SSG), and client-side rendering (CSR). When would you choose each?',
+        type: 'technical'
+      },
+      {
+        question:
+          'How do you approach accessibility (a11y) in your UI components? Give examples of ARIA attributes you commonly use.',
+        type: 'technical'
+      }
     ];
-  } else if (roleLower.includes('backend') || roleLower.includes('node') || roleLower.includes('database')) {
+
+  // ─── Backend / Node / Express / API / Golang / Java ───────────────────────
+  } else if (
+    roleLower.includes('backend') ||
+    roleLower.includes('back-end') ||
+    roleLower.includes('node') ||
+    roleLower.includes('express') ||
+    roleLower.includes('api developer') ||
+    roleLower.includes('java developer') ||
+    roleLower.includes('golang') ||
+    roleLower.includes('spring boot')
+  ) {
     technicalQuestions = [
-      { question: 'Explain the difference between SQL and NoSQL databases. When would you choose one over the other?', type: 'technical' },
-      { question: 'How does the Node.js event loop work under the hood?', type: 'technical' },
-      { question: 'Describe standard practices for securing an Express API endpoint from potential vulnerabilities.', type: 'technical' }
+      {
+        question:
+          'Explain the difference between SQL and NoSQL databases. When would you choose PostgreSQL over MongoDB?',
+        type: 'technical'
+      },
+      {
+        question:
+          'How does the Node.js event loop work? Explain the phases: timers, I/O callbacks, poll, check, and close.',
+        type: 'technical'
+      },
+      {
+        question:
+          'Describe best practices for securing a REST API — authentication, rate limiting, input validation, and error handling.',
+        type: 'technical'
+      },
+      {
+        question:
+          'What is database indexing and how do you decide which columns to index? What are the trade-offs?',
+        type: 'technical'
+      },
+      {
+        question:
+          'Explain the difference between REST and GraphQL. When is GraphQL a better architectural choice?',
+        type: 'technical'
+      },
+      {
+        question:
+          'How would you design a scalable background job queue system (e.g., for sending emails or processing uploads)?',
+        type: 'technical'
+      }
     ];
-  } else if (roleLower.includes('data') || roleLower.includes('python') || roleLower.includes('analytics')) {
+
+  // ─── Data Science / ML / Analytics / Python ───────────────────────────────
+  } else if (
+    roleLower.includes('data scientist') ||
+    roleLower.includes('data analyst') ||
+    roleLower.includes('machine learning') ||
+    roleLower.includes('ml engineer') ||
+    roleLower.includes('ai engineer') ||
+    roleLower.includes('python') ||
+    roleLower.includes('analytics') ||
+    roleLower.includes('data engineer')
+  ) {
     technicalQuestions = [
-      { question: 'Explain the difference between supervised and unsupervised machine learning models.', type: 'technical' },
-      { question: 'How do you handle missing or noisy values in a dataset during preprocessing?', type: 'technical' },
-      { question: 'Write a SQL query description to find the second-highest salary from an Employee table.', type: 'technical' }
+      {
+        question:
+          'Explain the difference between supervised, unsupervised, and reinforcement learning with real-world use cases.',
+        type: 'technical'
+      },
+      {
+        question:
+          'How do you handle missing values, outliers, and class imbalance in a dataset before model training?',
+        type: 'technical'
+      },
+      {
+        question:
+          'Write a high-level description of a SQL query to find the second-highest salary from an Employee table. Explain your approach.',
+        type: 'technical'
+      },
+      {
+        question:
+          'What is overfitting and how do you prevent it? Discuss regularization, cross-validation, and early stopping.',
+        type: 'technical'
+      },
+      {
+        question:
+          'Explain the difference between Pandas DataFrame operations and SQL queries. When do you prefer each?',
+        type: 'technical'
+      },
+      {
+        question:
+          'How would you design an end-to-end ML pipeline from data ingestion to model deployment and monitoring?',
+        type: 'technical'
+      }
     ];
-  } else if (roleLower.includes('designer') || roleLower.includes('ux') || roleLower.includes('ui')) {
+
+  // ─── UX / UI Designer / Product Designer / Figma ─────────────────────────
+  } else if (
+    roleLower.includes('designer') ||
+    roleLower.includes('ux') ||
+    roleLower.includes('ui designer') ||
+    roleLower.includes('product designer') ||
+    roleLower.includes('figma') ||
+    roleLower.includes('interaction designer')
+  ) {
     technicalQuestions = [
-      { question: 'Walk me through your UX design process from initial wireframing to developer handoff.', type: 'technical' },
-      { question: 'What is the importance of visual hierarchy and color psychology in a SaaS dashboard interface?', type: 'technical' },
-      { question: 'How do you conduct usability testing and incorporate negative feedback into layouts?', type: 'technical' }
+      {
+        question:
+          'Walk me through your complete UX design process — from user research and personas to wireframes, prototypes, and developer handoff.',
+        type: 'technical'
+      },
+      {
+        question:
+          'Explain the role of visual hierarchy, typography, and color psychology in designing an effective SaaS dashboard.',
+        type: 'technical'
+      },
+      {
+        question:
+          'How do you conduct usability testing sessions? How do you prioritize and incorporate conflicting user feedback?',
+        type: 'technical'
+      },
+      {
+        question:
+          'What is the difference between UX and UI design? How do you collaborate with developers to maintain design fidelity?',
+        type: 'technical'
+      },
+      {
+        question:
+          'How do you design for accessibility? Give specific examples — color contrast, keyboard navigation, screen reader support.',
+        type: 'technical'
+      },
+      {
+        question:
+          'Describe a situation where data or analytics changed a design decision you had already committed to.',
+        type: 'technical'
+      }
     ];
+
+  // ─── DevOps / Cloud / AWS / GCP / Kubernetes / Docker ────────────────────
+  } else if (
+    roleLower.includes('devops') ||
+    roleLower.includes('sre') ||
+    roleLower.includes('site reliability') ||
+    roleLower.includes('cloud') ||
+    roleLower.includes('aws') ||
+    roleLower.includes('gcp') ||
+    roleLower.includes('azure') ||
+    roleLower.includes('kubernetes') ||
+    roleLower.includes('docker') ||
+    roleLower.includes('infrastructure') ||
+    roleLower.includes('platform engineer')
+  ) {
+    technicalQuestions = [
+      {
+        question:
+          'Explain the difference between Docker containers and virtual machines. When would you use one over the other?',
+        type: 'technical'
+      },
+      {
+        question:
+          'Walk me through a CI/CD pipeline you designed or maintained. What tools did you use and how did you handle deployment rollbacks?',
+        type: 'technical'
+      },
+      {
+        question:
+          'What is Infrastructure as Code (IaC)? Compare Terraform and AWS CloudFormation — when would you choose each?',
+        type: 'technical'
+      },
+      {
+        question:
+          'How does Kubernetes manage pod scheduling, autoscaling, and self-healing? Explain the role of the control plane.',
+        type: 'technical'
+      },
+      {
+        question:
+          'Describe your approach to monitoring, alerting, and on-call incident management in a production system.',
+        type: 'technical'
+      },
+      {
+        question:
+          'What are the key differences between blue-green deployments, canary releases, and feature flags? When do you use each?',
+        type: 'technical'
+      }
+    ];
+
+  // ─── Mobile Developer / iOS / Android / Flutter / React Native ───────────
+  } else if (
+    roleLower.includes('mobile') ||
+    roleLower.includes('ios') ||
+    roleLower.includes('android') ||
+    roleLower.includes('flutter') ||
+    roleLower.includes('react native') ||
+    roleLower.includes('swift') ||
+    roleLower.includes('kotlin')
+  ) {
+    technicalQuestions = [
+      {
+        question:
+          'What are the key differences between native, hybrid, and cross-platform mobile development? When would you recommend each approach?',
+        type: 'technical'
+      },
+      {
+        question:
+          'How do you handle offline data persistence in a mobile app? Compare SQLite, Hive, and AsyncStorage.',
+        type: 'technical'
+      },
+      {
+        question:
+          'Explain the mobile app lifecycle (foreground, background, suspended states). How do you handle state restoration?',
+        type: 'technical'
+      },
+      {
+        question:
+          'What performance bottlenecks are common in mobile apps and how do you diagnose and fix them (e.g., janky scrolling, memory leaks)?',
+        type: 'technical'
+      },
+      {
+        question:
+          'How do you implement push notifications in a mobile app? Describe the architecture from the server to the device.',
+        type: 'technical'
+      },
+      {
+        question:
+          'Explain how you manage app signing, release builds, and distribution through the App Store or Google Play.',
+        type: 'technical'
+      }
+    ];
+
+  // ─── Product Manager / PM / Product Owner ────────────────────────────────
+  } else if (
+    roleLower.includes('product manager') ||
+    roleLower.includes('product owner') ||
+    roleLower.includes(' pm ') ||
+    roleLower === 'pm' ||
+    roleLower.includes('program manager')
+  ) {
+    technicalQuestions = [
+      {
+        question:
+          'How do you prioritize features on a product roadmap when you have limited engineering resources and competing stakeholder demands?',
+        type: 'technical'
+      },
+      {
+        question:
+          'Walk me through how you define success metrics for a new feature. What KPIs would you set for a user onboarding flow?',
+        type: 'technical'
+      },
+      {
+        question:
+          'Describe how you gather and synthesize user research, support tickets, and analytics data to identify the right problem to solve.',
+        type: 'technical'
+      },
+      {
+        question:
+          'How do you write a compelling product requirements document (PRD)? What sections do you always include?',
+        type: 'technical'
+      },
+      {
+        question:
+          'Tell me about a time a product launch failed or underperformed. What did you learn and how did you course-correct?',
+        type: 'technical'
+      },
+      {
+        question:
+          'How do you work with engineering, design, and marketing teams to ship a product on time without sacrificing quality?',
+        type: 'technical'
+      }
+    ];
+
+  // ─── QA / Testing / Automation / SDET ────────────────────────────────────
+  } else if (
+    roleLower.includes('qa') ||
+    roleLower.includes('quality assurance') ||
+    roleLower.includes('testing') ||
+    roleLower.includes('automation engineer') ||
+    roleLower.includes('sdet') ||
+    roleLower.includes('test engineer')
+  ) {
+    technicalQuestions = [
+      {
+        question:
+          'Explain the test pyramid. How do you balance unit tests, integration tests, and end-to-end tests in a CI pipeline?',
+        type: 'technical'
+      },
+      {
+        question:
+          'Walk me through how you would design an automated regression test suite for a large e-commerce checkout flow.',
+        type: 'technical'
+      },
+      {
+        question:
+          'What is the difference between black-box and white-box testing? When do you apply each approach?',
+        type: 'technical'
+      },
+      {
+        question:
+          'How do you test API endpoints? Describe your approach to validating status codes, response schemas, and edge cases.',
+        type: 'technical'
+      },
+      {
+        question:
+          'How do you identify flaky tests and what strategies do you use to stabilize them in a CI/CD environment?',
+        type: 'technical'
+      },
+      {
+        question:
+          'Explain the concept of test-driven development (TDD). What are its benefits and where can it become impractical?',
+        type: 'technical'
+      }
+    ];
+
+  // ─── Cybersecurity / Pen Testing / Security Engineer ─────────────────────
+  } else if (
+    roleLower.includes('security') ||
+    roleLower.includes('cybersecurity') ||
+    roleLower.includes('penetration') ||
+    roleLower.includes('pen test') ||
+    roleLower.includes('infosec') ||
+    roleLower.includes('soc analyst') ||
+    roleLower.includes('ethical hack')
+  ) {
+    technicalQuestions = [
+      {
+        question:
+          'Explain the OWASP Top 10 vulnerabilities. Which do you consider the most critical and why?',
+        type: 'technical'
+      },
+      {
+        question:
+          'Walk me through a penetration testing engagement from reconnaissance to reporting. What tools do you use at each stage?',
+        type: 'technical'
+      },
+      {
+        question:
+          'What is the difference between symmetric and asymmetric encryption? Give examples of where each is used in web applications.',
+        type: 'technical'
+      },
+      {
+        question:
+          'How do you approach threat modelling for a new application feature? What frameworks do you use (STRIDE, PASTA)?',
+        type: 'technical'
+      },
+      {
+        question:
+          'Explain SQL injection and cross-site scripting (XSS). How would you prevent each in a Node.js web application?',
+        type: 'technical'
+      },
+      {
+        question:
+          'Describe the purpose of a security incident response plan. What are the key phases when a breach is detected?',
+        type: 'technical'
+      }
+    ];
+
+  // ─── Full Stack / MERN / MEAN ─────────────────────────────────────────────
+  } else if (
+    roleLower.includes('fullstack') ||
+    roleLower.includes('full stack') ||
+    roleLower.includes('full-stack') ||
+    roleLower.includes('mern') ||
+    roleLower.includes('mean') ||
+    roleLower.includes('mean stack')
+  ) {
+    technicalQuestions = [
+      {
+        question:
+          'Describe the architecture of a full-stack MERN/MEAN application. How do the frontend, backend, and database interact?',
+        type: 'technical'
+      },
+      {
+        question:
+          'What is the difference between REST and GraphQL APIs? When would you choose GraphQL for a full-stack project?',
+        type: 'technical'
+      },
+      {
+        question:
+          'How do you handle authentication and authorization in a full-stack app? Compare JWT tokens and session-based auth.',
+        type: 'technical'
+      },
+      {
+        question:
+          'Explain the concept of SSR (Server-Side Rendering) vs CSR (Client-Side Rendering) and how Next.js addresses both.',
+        type: 'technical'
+      },
+      {
+        question:
+          'How do you prevent N+1 query problems when fetching relational data in a full-stack application?',
+        type: 'technical'
+      },
+      {
+        question:
+          'Walk me through how you would deploy a full-stack application to a cloud provider, including environment variables, CI/CD, and monitoring.',
+        type: 'technical'
+      }
+    ];
+
+  // ─── Default / General Software Engineer (catch-all) ─────────────────────
   } else {
-    // Default/General Software Engineer
     technicalQuestions = [
-      { question: 'Explain the difference between synchronous and asynchronous code. How does async execution operate in your primary language?', type: 'technical' },
-      { question: 'What are the main principles of Object-Oriented Programming (OOP), and how do they differ from functional design?', type: 'technical' },
-      { question: 'How do you optimize a search operation over a sorted array? Describe the time complexity.', type: 'technical' }
+      {
+        question:
+          'Explain the difference between synchronous and asynchronous code. How does the event loop handle async operations in JavaScript?',
+        type: 'technical'
+      },
+      {
+        question:
+          'What are the main principles of Object-Oriented Programming (OOP)? How do they compare to functional programming principles?',
+        type: 'technical'
+      },
+      {
+        question:
+          'How do you optimize a search operation over a large dataset? Describe binary search and its time complexity.',
+        type: 'technical'
+      },
+      {
+        question:
+          'What is the CAP theorem and how does it affect distributed system design decisions?',
+        type: 'technical'
+      },
+      {
+        question:
+          'Explain the SOLID principles of software design with an example of applying each in practice.',
+        type: 'technical'
+      },
+      {
+        question:
+          `What does clean, maintainable code look like to you as a ${role}? How do you ensure code quality in a team setting?`,
+        type: 'technical'
+      }
     ];
   }
 
+  // For voice-video mode: caller reduces count externally. Return all here.
   return [...hrQuestions, ...technicalQuestions];
 };
 
