@@ -12,6 +12,7 @@ import resumeRouter from './routes/resume.js';
 import interviewRouter from './routes/interview.js';
 import skillgapRouter from './routes/skillgap.js';
 import careertwinRouter from './routes/careertwin.js';
+import skillassessmentRouter from './routes/skillassessment.js';
 import dashboardRouter from './routes/dashboard.js';
 import adminRouter from './routes/admin.js';
 
@@ -43,6 +44,7 @@ app.use('/api/resume', resumeRouter);
 app.use('/api/interview', interviewRouter);
 app.use('/api/skillgap', skillgapRouter);
 app.use('/api/careertwin', careertwinRouter);
+app.use('/api/skillassessment', skillassessmentRouter);
 app.use('/api/dashboard', dashboardRouter);
 app.use('/api/admin', adminRouter);
 

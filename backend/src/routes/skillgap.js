@@ -16,7 +16,19 @@ router.post('/', verifyToken, async (req, res) => {
   }
 
   try {
-    const analysis = generateSkillGapAnalysis(currentSkills, targetRole);
+    // Augment currentSkills with actual passed MCQ test skills
+    const mcqSkills = await dbAll(`
+      SELECT s.skill_name
+      FROM Leaderboard l 
+      JOIN HubSkills s ON l.skill_id = s.id 
+      WHERE l.user_id = ? AND l.highest_score >= 40
+    `, [req.user.id]);
+    
+    // Combine passed test skills with self-declared skills
+    const mcqSkillNames = mcqSkills.map(s => s.skill_name);
+    const combinedSkillsString = currentSkills + ', ' + mcqSkillNames.join(', ');
+
+    const analysis = generateSkillGapAnalysis(combinedSkillsString, targetRole);
 
     const {
       missingSkills,
@@ -50,7 +62,7 @@ router.post('/', verifyToken, async (req, res) => {
         `UPDATE Profiles 
          SET target_job_role = ?, skills = ?, updated_at = CURRENT_TIMESTAMP
          WHERE user_id = ?`,
-        [targetRole, currentSkills, req.user.id]
+        [targetRole, combinedSkillsString, req.user.id]
       );
     }
 

@@ -3,7 +3,7 @@ import { useAuth } from '../context/AuthContext.jsx';
 import apiService from '../services/api.js';
 import { 
   LayoutDashboard, Compass, FileText, HelpCircle, GitMerge, Users, LogOut,
-  User, CheckCircle, RefreshCw, Award, Edit3, Save, Target
+  User, CheckCircle, RefreshCw, Award, Edit3, Save, Target, CheckSquare
 } from 'lucide-react';
 
 // Sub-pages imports
@@ -12,6 +12,7 @@ import { ResumeAnalyzer } from './ResumeAnalyzer.jsx';
 import { MockInterview } from './MockInterview.jsx';
 import { SkillGap } from './SkillGap.jsx';
 import { CareerTwin } from './CareerTwin.jsx';
+import { SkillAssessmentHub } from './SkillAssessmentHub.jsx';
 
 export const Dashboard = ({ onNavigate }) => {
   const { logout, refreshUser } = useAuth();
@@ -162,6 +163,15 @@ export const Dashboard = ({ onNavigate }) => {
                 style={styles.sidebarBtn}
               >
                 <GitMerge size={18} /> Skill Gap Analysis
+              </button>
+            </li>
+            <li>
+              <button 
+                className={`sidebar-item-link ${activeTab === 'skillhub' ? 'active' : ''}`}
+                onClick={() => setActiveTab('skillhub')}
+                style={styles.sidebarBtn}
+              >
+                <CheckSquare size={18} /> Skill Assessment
               </button>
             </li>
             <li>
@@ -431,6 +441,9 @@ export const Dashboard = ({ onNavigate }) => {
         )}
         {activeTab === 'careertwin' && (
           <CareerTwin />
+        )}
+        {activeTab === 'skillhub' && (
+          <SkillAssessmentHub />
         )}
       </main>
     </div>

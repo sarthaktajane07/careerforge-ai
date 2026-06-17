@@ -9,6 +9,7 @@ export const AdminDashboard = ({ onNavigate }) => {
   const { logout } = useAuth();
   const [data, setData] = useState(null);
   const [loading, setLoading] = useState(true);
+  const [isSeeding, setIsSeeding] = useState(false);
 
   const loadAnalytics = async () => {
     setLoading(true);
@@ -29,6 +30,20 @@ export const AdminDashboard = ({ onNavigate }) => {
   const handleLogout = () => {
     logout();
     onNavigate('landing');
+  };
+
+  const handleSeedDB = async () => {
+    if (confirm('Are you sure you want to seed the question bank? This will add mock questions to the database.')) {
+      setIsSeeding(true);
+      try {
+        const result = await apiService.seedQuestionBank();
+        alert(result.message);
+      } catch (err) {
+        alert(err.message);
+      } finally {
+        setIsSeeding(false);
+      }
+    }
   };
 
   if (loading && !data) {
@@ -83,9 +98,14 @@ export const AdminDashboard = ({ onNavigate }) => {
             <h1 style={{fontSize: '2rem'}}>System Administration Console</h1>
             <p style={{color: 'var(--color-text-secondary)'}}>Global audit statistics, user assessments indices, and student activity logs.</p>
           </div>
-          <button className="btn btn-secondary" onClick={loadAnalytics} style={{display: 'flex', gap: '0.5rem', alignItems: 'center'}}>
-            <RefreshCw size={16} /> Refresh
-          </button>
+          <div style={{display: 'flex', gap: '1rem'}}>
+            <button className="btn btn-secondary" onClick={handleSeedDB} disabled={isSeeding}>
+              {isSeeding ? 'Seeding DB...' : 'Generate Skill Questions'}
+            </button>
+            <button className="btn btn-primary" onClick={loadAnalytics} style={{display: 'flex', gap: '0.5rem', alignItems: 'center'}}>
+              <RefreshCw size={16} /> Refresh
+            </button>
+          </div>
         </div>
 
         {/* Global Statistics Grid */}

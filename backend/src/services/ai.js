@@ -157,7 +157,7 @@ export const generateInterviewQuestions = (jobRole) => {
     technicalQuestions = [
       {
         question:
-          'What is the Virtual DOM in React and how does React's reconciliation algorithm optimize re-renders?',
+          "What is the Virtual DOM in React and how does React's reconciliation algorithm optimize re-renders?",
         type: 'technical'
       },
       {
@@ -768,8 +768,8 @@ export const simulateCareerTwin = (education, currentSkillsString, careerGoal) =
 
 // 7. Calculate overall Career Readiness Score
 export const calculateReadinessScore = (resume, interview, skills, assessment) => {
-  // Formula: 30% Resume, 30% Interview, 20% Skills, 20% Assessment
-  const total = (resume * 0.3) + (interview * 0.3) + (skills * 0.2) + (assessment * 0.2);
+  // Formula: 25% Resume, 25% Interview, 30% Skills Assessment, 20% Career Assessment
+  const total = (resume * 0.25) + (interview * 0.25) + (skills * 0.30) + (assessment * 0.20);
   const rounded = Math.round(total * 10) / 10; // decimal formatting
 
   let level = 'Beginner';
@@ -853,5 +853,62 @@ export const gradeVoiceVideoSession = (questionsAndAnswers, clientMetrics = {}) 
     bodyLanguageScore,
     overallScore,
     suggestions: suggestionsList.join(' | ')
+  };
+};
+
+// 9. Skill Assessment Hub AI Report Generator
+export const generateSkillAssessmentReport = (skillName, percentage, level) => {
+  let strengths = '';
+  let weaknesses = '';
+  let topicsToImprove = '';
+  let recommendedCourses = '';
+  let recommendedCertifications = '';
+  let learningPlan = '';
+
+  const skill = skillName.toLowerCase();
+
+  // Basic logic based on score
+  if (percentage >= 80) {
+    strengths = `Excellent grasp of ${skillName} core concepts, syntax, and advanced paradigms. Strong problem-solving ability demonstrated.`;
+    weaknesses = `Minor gaps in highly specific niche edge-cases of ${skillName}.`;
+    topicsToImprove = `System architecture involving ${skillName}, Performance optimization.`;
+    learningPlan = `Focus on contributing to open source projects or building complex microservices using ${skillName}.`;
+  } else if (percentage >= 50) {
+    strengths = `Solid understanding of ${skillName} fundamentals and basic operations.`;
+    weaknesses = `Struggles with advanced ${skillName} concepts and complex integrations.`;
+    topicsToImprove = `Intermediate patterns, best practices, and integration with other tools.`;
+    learningPlan = `Complete intermediate projects. Focus on mastering the areas where you guessed the answers.`;
+  } else {
+    strengths = `Familiarity with the basic premise of ${skillName}.`;
+    weaknesses = `Lacks foundational understanding of syntax, core concepts, and standard practices in ${skillName}.`;
+    topicsToImprove = `Basic syntax, standard libraries, foundational concepts.`;
+    learningPlan = `Restart from beginner tutorials. Focus on building small, single-file projects before moving to complex architectures.`;
+  }
+
+  // Specific course/cert recommendations
+  if (skill.includes('python')) {
+    recommendedCourses = '100 Days of Code: The Complete Python Pro Bootcamp (Udemy)';
+    recommendedCertifications = 'PCEP – Certified Entry-Level Python Programmer';
+  } else if (skill.includes('aws') || skill.includes('cloud')) {
+    recommendedCourses = 'AWS Certified Cloud Practitioner (A Cloud Guru)';
+    recommendedCertifications = 'AWS Certified Solutions Architect - Associate';
+  } else if (skill.includes('react') || skill.includes('javascript')) {
+    recommendedCourses = 'Epic React by Kent C. Dodds | JavaScript: Understanding the Weird Parts';
+    recommendedCertifications = 'Meta Front-End Developer Professional Certificate';
+  } else if (skill.includes('sql') || skill.includes('dbms')) {
+    recommendedCourses = 'The Ultimate MySQL Bootcamp (Udemy)';
+    recommendedCertifications = 'Oracle Database SQL Certified Associate';
+  } else {
+    recommendedCourses = `Advanced ${skillName} Masterclass on Coursera/Udemy`;
+    recommendedCertifications = `Official ${skillName} Industry Certification`;
+  }
+
+  return {
+    strengths,
+    weaknesses,
+    topicsToImprove,
+    recommendedCourses,
+    recommendedCertifications,
+    learningPlan
   };
 };

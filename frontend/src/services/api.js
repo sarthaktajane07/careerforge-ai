@@ -211,6 +211,16 @@ export const apiService = {
     if (!res.ok) throw new Error(data.message || 'Failed to fetch admin analytics data');
     return data;
   },
+
+  seedQuestionBank: async () => {
+    const res = await fetch(API_BASE_URL + '/api/admin/seed-question-bank', {
+      method: 'POST',
+      headers: getHeaders(),
+    });
+    const data = await res.json();
+    if (!res.ok) throw new Error(data.message || 'Failed to seed question bank');
+    return data;
+  },
 };
 
 export default apiService;

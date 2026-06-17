@@ -15,7 +15,19 @@ router.post('/', verifyToken, async (req, res) => {
   }
 
   try {
-    const simulations = simulateCareerTwin(education, currentSkills, careerGoal);
+    // Augment currentSkills with actual passed MCQ test skills
+    const mcqSkills = await dbAll(`
+      SELECT s.skill_name
+      FROM Leaderboard l 
+      JOIN HubSkills s ON l.skill_id = s.id 
+      WHERE l.user_id = ? AND l.highest_score >= 40
+    `, [req.user.id]);
+    
+    // Combine passed test skills with self-declared skills
+    const mcqSkillNames = mcqSkills.map(s => s.skill_name);
+    const combinedSkillsString = currentSkills + ', ' + mcqSkillNames.join(', ');
+
+    const simulations = simulateCareerTwin(education, combinedSkillsString, careerGoal);
 
     const { scenarioA, scenarioB, scenarioC } = simulations;
 
@@ -26,7 +38,7 @@ router.post('/', verifyToken, async (req, res) => {
       [
         req.user.id,
         education,
-        currentSkills,
+        combinedSkillsString,
         careerGoal,
         JSON.stringify(scenarioA),
         JSON.stringify(scenarioB),
@@ -37,7 +49,7 @@ router.post('/', verifyToken, async (req, res) => {
     res.status(201).json({
       id: insertResult.id,
       education,
-      currentSkills,
+      currentSkills: combinedSkillsString,
       careerGoal,
       ...simulations
     });

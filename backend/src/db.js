@@ -242,6 +242,124 @@ export const initDb = async () => {
       )
     `);
 
+    // =============================================
+    // AI SKILL ASSESSMENT HUB TABLES
+    // =============================================
+
+    // 14. SkillCategories Table
+    await dbRun(`
+      CREATE TABLE IF NOT EXISTS SkillCategories (
+        id INTEGER PRIMARY KEY AUTOINCREMENT,
+        category_name TEXT NOT NULL UNIQUE
+      )
+    `);
+
+    // 15. HubSkills Table
+    await dbRun(`
+      CREATE TABLE IF NOT EXISTS HubSkills (
+        id INTEGER PRIMARY KEY AUTOINCREMENT,
+        category_id INTEGER NOT NULL,
+        skill_name TEXT NOT NULL UNIQUE,
+        description TEXT,
+        FOREIGN KEY (category_id) REFERENCES SkillCategories(id) ON DELETE CASCADE
+      )
+    `);
+
+    // 16. HubQuestions Table
+    await dbRun(`
+      CREATE TABLE IF NOT EXISTS HubQuestions (
+        id INTEGER PRIMARY KEY AUTOINCREMENT,
+        skill_id INTEGER NOT NULL,
+        question_text TEXT NOT NULL,
+        difficulty TEXT CHECK(difficulty IN ('beginner', 'intermediate', 'advanced')) NOT NULL,
+        FOREIGN KEY (skill_id) REFERENCES HubSkills(id) ON DELETE CASCADE
+      )
+    `);
+
+    // 17. HubOptions Table
+    await dbRun(`
+      CREATE TABLE IF NOT EXISTS HubOptions (
+        id INTEGER PRIMARY KEY AUTOINCREMENT,
+        question_id INTEGER NOT NULL,
+        option_text TEXT NOT NULL,
+        is_correct INTEGER NOT NULL DEFAULT 0,
+        FOREIGN KEY (question_id) REFERENCES HubQuestions(id) ON DELETE CASCADE
+      )
+    `);
+
+    // 18. SkillTestAttempts Table
+    await dbRun(`
+      CREATE TABLE IF NOT EXISTS SkillTestAttempts (
+        id INTEGER PRIMARY KEY AUTOINCREMENT,
+        user_id INTEGER NOT NULL,
+        skill_id INTEGER NOT NULL,
+        total_questions INTEGER NOT NULL DEFAULT 20,
+        correct_answers INTEGER NOT NULL DEFAULT 0,
+        wrong_answers INTEGER NOT NULL DEFAULT 0,
+        percentage_score REAL NOT NULL DEFAULT 0.0,
+        skill_level TEXT NOT NULL DEFAULT 'Beginner',
+        created_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP,
+        FOREIGN KEY (user_id) REFERENCES Users(id) ON DELETE CASCADE,
+        FOREIGN KEY (skill_id) REFERENCES HubSkills(id) ON DELETE CASCADE
+      )
+    `);
+
+    // 19. SkillTestResults Table
+    await dbRun(`
+      CREATE TABLE IF NOT EXISTS SkillTestResults (
+        id INTEGER PRIMARY KEY AUTOINCREMENT,
+        attempt_id INTEGER NOT NULL,
+        question_id INTEGER NOT NULL,
+        selected_option_id INTEGER,
+        is_correct INTEGER NOT NULL DEFAULT 0,
+        FOREIGN KEY (attempt_id) REFERENCES SkillTestAttempts(id) ON DELETE CASCADE,
+        FOREIGN KEY (question_id) REFERENCES HubQuestions(id) ON DELETE CASCADE,
+        FOREIGN KEY (selected_option_id) REFERENCES HubOptions(id) ON DELETE SET NULL
+      )
+    `);
+
+    // 20. SkillReports Table
+    await dbRun(`
+      CREATE TABLE IF NOT EXISTS SkillReports (
+        id INTEGER PRIMARY KEY AUTOINCREMENT,
+        attempt_id INTEGER NOT NULL UNIQUE,
+        strengths TEXT NOT NULL,
+        weaknesses TEXT NOT NULL,
+        topics_to_improve TEXT NOT NULL,
+        recommended_courses TEXT NOT NULL,
+        recommended_certifications TEXT NOT NULL,
+        learning_plan TEXT NOT NULL,
+        FOREIGN KEY (attempt_id) REFERENCES SkillTestAttempts(id) ON DELETE CASCADE
+      )
+    `);
+
+    // 21. UserBadges Table
+    await dbRun(`
+      CREATE TABLE IF NOT EXISTS UserBadges (
+        id INTEGER PRIMARY KEY AUTOINCREMENT,
+        user_id INTEGER NOT NULL,
+        skill_id INTEGER NOT NULL,
+        badge_name TEXT NOT NULL,
+        earned_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP,
+        FOREIGN KEY (user_id) REFERENCES Users(id) ON DELETE CASCADE,
+        FOREIGN KEY (skill_id) REFERENCES HubSkills(id) ON DELETE CASCADE
+      )
+    `);
+
+    // 22. Leaderboard Table
+    await dbRun(`
+      CREATE TABLE IF NOT EXISTS Leaderboard (
+        id INTEGER PRIMARY KEY AUTOINCREMENT,
+        user_id INTEGER NOT NULL,
+        skill_id INTEGER NOT NULL,
+        highest_score REAL NOT NULL DEFAULT 0.0,
+        updated_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP,
+        UNIQUE (user_id, skill_id),
+        FOREIGN KEY (user_id) REFERENCES Users(id) ON DELETE CASCADE,
+        FOREIGN KEY (skill_id) REFERENCES HubSkills(id) ON DELETE CASCADE
+      )
+    `);
+
     // Run DB Migrations for existing databases
     try {
       await dbRun("ALTER TABLE Interviews ADD COLUMN mode TEXT DEFAULT 'text'");

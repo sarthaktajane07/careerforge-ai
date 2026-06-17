@@ -164,3 +164,103 @@ CREATE TABLE IF NOT EXISTS AdminAnalytics (
     total_resumes INT NOT NULL DEFAULT 0,
     updated_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP ON UPDATE CURRENT_TIMESTAMP
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_unicode_ci;
+
+-- ==============================================================================
+-- AI SKILL ASSESSMENT HUB TABLES
+-- ==============================================================================
+
+-- 14. SkillCategories Table
+CREATE TABLE IF NOT EXISTS SkillCategories (
+    id INT AUTO_INCREMENT PRIMARY KEY,
+    category_name VARCHAR(100) NOT NULL UNIQUE
+) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_unicode_ci;
+
+-- 15. HubSkills Table (Replaces/extends basic Skills table for the Hub)
+CREATE TABLE IF NOT EXISTS HubSkills (
+    id INT AUTO_INCREMENT PRIMARY KEY,
+    category_id INT NOT NULL,
+    skill_name VARCHAR(100) NOT NULL UNIQUE,
+    description TEXT NULL,
+    FOREIGN KEY (category_id) REFERENCES SkillCategories(id) ON DELETE CASCADE
+) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_unicode_ci;
+
+-- 16. HubQuestions Table
+CREATE TABLE IF NOT EXISTS HubQuestions (
+    id INT AUTO_INCREMENT PRIMARY KEY,
+    skill_id INT NOT NULL,
+    question_text TEXT NOT NULL,
+    difficulty ENUM('beginner', 'intermediate', 'advanced') NOT NULL,
+    FOREIGN KEY (skill_id) REFERENCES HubSkills(id) ON DELETE CASCADE
+) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_unicode_ci;
+
+-- 17. HubOptions Table
+CREATE TABLE IF NOT EXISTS HubOptions (
+    id INT AUTO_INCREMENT PRIMARY KEY,
+    question_id INT NOT NULL,
+    option_text TEXT NOT NULL,
+    is_correct BOOLEAN NOT NULL DEFAULT FALSE,
+    FOREIGN KEY (question_id) REFERENCES HubQuestions(id) ON DELETE CASCADE
+) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_unicode_ci;
+
+-- 18. SkillTestAttempts Table
+CREATE TABLE IF NOT EXISTS SkillTestAttempts (
+    id INT AUTO_INCREMENT PRIMARY KEY,
+    user_id INT NOT NULL,
+    skill_id INT NOT NULL,
+    total_questions INT NOT NULL DEFAULT 20,
+    correct_answers INT NOT NULL DEFAULT 0,
+    wrong_answers INT NOT NULL DEFAULT 0,
+    percentage_score FLOAT NOT NULL DEFAULT 0.0,
+    skill_level ENUM('Beginner', 'Intermediate', 'Advanced') NOT NULL DEFAULT 'Beginner',
+    created_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP,
+    FOREIGN KEY (user_id) REFERENCES Users(id) ON DELETE CASCADE,
+    FOREIGN KEY (skill_id) REFERENCES HubSkills(id) ON DELETE CASCADE
+) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_unicode_ci;
+
+-- 19. SkillTestResults Table (Stores individual question answers per attempt)
+CREATE TABLE IF NOT EXISTS SkillTestResults (
+    id INT AUTO_INCREMENT PRIMARY KEY,
+    attempt_id INT NOT NULL,
+    question_id INT NOT NULL,
+    selected_option_id INT NULL,
+    is_correct BOOLEAN NOT NULL DEFAULT FALSE,
+    FOREIGN KEY (attempt_id) REFERENCES SkillTestAttempts(id) ON DELETE CASCADE,
+    FOREIGN KEY (question_id) REFERENCES HubQuestions(id) ON DELETE CASCADE,
+    FOREIGN KEY (selected_option_id) REFERENCES HubOptions(id) ON DELETE SET NULL
+) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_unicode_ci;
+
+-- 20. SkillReports Table
+CREATE TABLE IF NOT EXISTS SkillReports (
+    id INT AUTO_INCREMENT PRIMARY KEY,
+    attempt_id INT NOT NULL UNIQUE,
+    strengths TEXT NOT NULL,
+    weaknesses TEXT NOT NULL,
+    topics_to_improve TEXT NOT NULL,
+    recommended_courses TEXT NOT NULL,
+    recommended_certifications TEXT NOT NULL,
+    learning_plan TEXT NOT NULL,
+    FOREIGN KEY (attempt_id) REFERENCES SkillTestAttempts(id) ON DELETE CASCADE
+) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_unicode_ci;
+
+-- 21. UserBadges Table
+CREATE TABLE IF NOT EXISTS UserBadges (
+    id INT AUTO_INCREMENT PRIMARY KEY,
+    user_id INT NOT NULL,
+    skill_id INT NOT NULL,
+    badge_name VARCHAR(255) NOT NULL,
+    earned_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP,
+    FOREIGN KEY (user_id) REFERENCES Users(id) ON DELETE CASCADE,
+    FOREIGN KEY (skill_id) REFERENCES HubSkills(id) ON DELETE CASCADE
+) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_unicode_ci;
+
+-- 22. Leaderboard Table (Could also be a view, but we'll use a table for caching top scores)
+CREATE TABLE IF NOT EXISTS Leaderboard (
+    id INT AUTO_INCREMENT PRIMARY KEY,
+    user_id INT NOT NULL,
+    skill_id INT NOT NULL,
+    highest_score FLOAT NOT NULL DEFAULT 0.0,
+    updated_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP ON UPDATE CURRENT_TIMESTAMP,
+    UNIQUE KEY unique_user_skill (user_id, skill_id),
+    FOREIGN KEY (user_id) REFERENCES Users(id) ON DELETE CASCADE,
+    FOREIGN KEY (skill_id) REFERENCES HubSkills(id) ON DELETE CASCADE
+) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_unicode_ci;

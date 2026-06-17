@@ -1,6 +1,7 @@
 import express from 'express';
 import { dbGet, dbAll } from '../db.js';
 import { verifyToken, requireAdmin } from '../middleware/auth.js';
+import { seedDatabase } from '../scripts/seedQuestions.js';
 
 const router = express.Router();
 
@@ -115,6 +116,18 @@ router.get('/analytics', verifyToken, requireAdmin, async (req, res) => {
   } catch (error) {
     console.error('Fetch admin analytics error:', error);
     res.status(500).json({ message: 'Server error retrieving administration analytics.' });
+  }
+});
+
+// @route   POST /api/admin/seed-question-bank
+// @desc    Admin utility to generate and insert the initial question bank
+router.post('/seed-question-bank', verifyToken, requireAdmin, async (req, res) => {
+  try {
+    const result = await seedDatabase();
+    res.json(result);
+  } catch (error) {
+    console.error('Seed database error:', error);
+    res.status(500).json({ message: 'Server error generating question bank.' });
   }
 });
 
